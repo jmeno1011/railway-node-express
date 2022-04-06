@@ -5,6 +5,7 @@ const app = express();
 // dependencies 추가 필요
 const helmet = require("helmet");
 const logger = require("morgan");
+const db = require("./config/db");
 // const compression = require('compression');
 // const dotenv = require("dotenv");
 // const cookieParser = require("cookie-parser");
@@ -36,6 +37,18 @@ app.get("/api", (req, res) => {
     console.log("error :: ", error);
     return res.status(500).send("Server error");
   }
+});
+
+app.get("/bar-chart", (req, res) => {
+  const select_barChart = "select * from barchart";
+  db.query(select_barChart, (error, result) => {
+    if (error) {
+      console.log("bar-chart:: error ::", error);
+    } else {
+      console.log("result ::", JSON.stringify(result));
+      res.status(200).send(result);
+    }
+  });
 });
 
 app.post("/", function (req, res) {
