@@ -12,7 +12,7 @@ const logger = require("morgan");
 // const bodyParser = require('body-parser');
 // ------------------------------------------ //
 
-const port = 8888;
+const port = process.env.PORT || 8000;
 // env setting
 // dotenv.config();
 
