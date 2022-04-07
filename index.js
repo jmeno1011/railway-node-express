@@ -34,6 +34,7 @@ app.use(cors(corsOption));
 
 app.use(
   session({
+    key: "logged",
     secret: "secret",
     resave: false,
     saveUninitialized: true,
