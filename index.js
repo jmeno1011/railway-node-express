@@ -30,7 +30,8 @@ const corsOption = {
   credentials: true,
   methods:"PUT, GET, POST, DELETE, OPTIONS",
 }
-app.use(cors(corsOption));
+// app.use(cors(corsOption));
+app.use(cors());
 
 app.use(
   session({
@@ -38,29 +39,29 @@ app.use(
     secret: "secret",
     resave: false,
     saveUninitialized: true,
-    cookie : {
-      httpOnly : true,
-      sameSite : 'none',
-      maxAge : 5300000,
-      secure : true,
-  },
+  //   cookie : {
+  //     httpOnly : true,
+  //     sameSite : 'none',
+  //     maxAge : 5300000,
+  //     secure : true,
+  // },
   })
 );
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.use(function(req, res, next) {
+// app.use(function(req, res, next) {
 
-  // res.header("Access-Control-Allow-Origin", "https://dev.d2lqfplyhcp8gx.amplifyapp.com");
+//   // res.header("Access-Control-Allow-Origin", "https://dev.d2lqfplyhcp8gx.amplifyapp.com");
   
-  res.header("Access-Control-Allow-Credentials", true);
+//   res.header("Access-Control-Allow-Credentials", true);
   
-  res.setHeader("Set-Cookie", "key=value; HttpOnly; SameSite=None")
+//   res.setHeader("Set-Cookie", "key=value; HttpOnly; SameSite=None")
   
-  next();
+//   next();
   
-  });
+//   });
 
 app.get("/", (req, res) => {
   console.log(`${new Date()}:: connect / `);
@@ -121,6 +122,7 @@ app.post("/login", (req, res) => {
         if (error) {
           console.log("session save error :: ", error);
         } else {
+          console.log("save_session::", req.session);
           console.log(`login::${new Date()}::result::${result[0]}`);
           res.status(200).send(result[0]);
         }
