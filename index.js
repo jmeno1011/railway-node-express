@@ -23,8 +23,12 @@ app.use(helmet());
 app.use(logger("dev"));
 // cors
 const corsOption = {
-  origin : true,
-  credentials : true
+  origin:[
+    'https://dev.d2lqfplyhcp8gx.amplifyapp.com',
+    'http://localhost:3000'
+  ],
+  credentials: true,
+  exposedHeaders: ["set-cookie"],
 }
 app.use(cors(corsOption));
 
