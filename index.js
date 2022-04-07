@@ -21,8 +21,16 @@ const port = process.env.PORT || 8000;
 app.use(helmet());
 // use morgan logger
 app.use(logger("dev"));
-// middleware
-app.use(cors());
+// cors
+const corsOption = {
+  origin:[
+    'https://dev.d2lqfplyhcp8gx.amplifyapp.com',
+    'http://localhost:3000'
+  ],
+  credentials: true,
+  exposedHeaders: ["set-cookie"],
+}
+app.use(cors(corsOption));
 
 app.use(
   session({
