@@ -12,7 +12,7 @@ const jwt = require("jsonwebtoken");
 const session = require("express-session");
 const bodyParser = require("body-parser");
 const db = require("./config/db");
-const { generateAccessToken, generateRefreshToken } = require("./jwt");
+const { generateAccessToken, generateRefreshToken, authenticateAccessToken } = require("./jwt");
 
 // ------------------------------------------ //
 
@@ -70,7 +70,8 @@ app.get("/api", (req, res) => {
   }
 });
 
-app.get("/bar-chart", (req, res) => {
+app.get("/bar-chart",authenticateAccessToken, (req, res) => {
+  console.log(req.user);
   const select_barChart = "select * from barchart";
   db.query(select_barChart, (error, result) => {
     if (error) {
