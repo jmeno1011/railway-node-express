@@ -1,10 +1,12 @@
 const mysql = require("mysql");
 const { db_config } = require("./db_config");
+const { db_config_local } = require("./db_config_local");
 
 let db;
 
 function handleDisconnect() {
-  db = mysql.createConnection(db_config);
+  // db = mysql.createConnection(db_config);
+  db = mysql.createConnection(db_config_local);
 
   db.connect(function (err) {
     if (err) {
