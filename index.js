@@ -10,7 +10,7 @@ const db = require("./config/db");
 // const dotenv = require("dotenv");
 // const cookieParser = require("cookie-parser");
 const session = require("express-session");
-// const bodyParser = require('body-parser');
+const bodyParser = require('body-parser');
 // ------------------------------------------ //
 
 const port = process.env.PORT || 8000;
@@ -29,6 +29,9 @@ app.use(session({
   resave:false,
   saveUninitialized:true
 }))
+
+app.use(bodyParser.urlencoded({extended:false}));
+app.use(bodyParser.json());
 
 app.get("/", (req, res) => {
   console.log(`${new Date()}:: connect / `);
