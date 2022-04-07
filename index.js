@@ -27,7 +27,9 @@ app.use(logger("dev"));
 // cors
 const corsOption = {
   origin:[
+    // manage_git1 aws server
     'https://dev.d2lqfplyhcp8gx.amplifyapp.com',
+    // local
     'http://localhost:3000'
   ],
   credentials: true,
