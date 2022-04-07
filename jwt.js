@@ -14,6 +14,7 @@ exports.generateRefreshToken = (id) => {
 exports.authenticateAccessToken = (req, res, next) => {
     let header = '';
     header = req.headers["authorization"];
+    console.log("header::",header);
     let token = header.split("::")[1];
 
     if (!token) {
