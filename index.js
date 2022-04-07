@@ -5,12 +5,14 @@ const app = express();
 // dependencies 추가 필요
 const helmet = require("helmet");
 const logger = require("morgan");
-const db = require("./config/db");
+const jwt = require("jsonwebtoken");
 // const compression = require('compression');
 // const dotenv = require("dotenv");
 // const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const bodyParser = require("body-parser");
+const db = require("./config/db");
+
 // ------------------------------------------ //
 
 const port = process.env.PORT || 8000;
@@ -51,17 +53,6 @@ app.use(
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-// app.use(function(req, res, next) {
-
-//   // res.header("Access-Control-Allow-Origin", "https://dev.d2lqfplyhcp8gx.amplifyapp.com");
-  
-//   res.header("Access-Control-Allow-Credentials", true);
-  
-//   res.setHeader("Set-Cookie", "key=value; HttpOnly; SameSite=None")
-  
-//   next();
-  
-//   });
 
 app.get("/", (req, res) => {
   console.log(`${new Date()}:: connect / `);
@@ -117,26 +108,29 @@ app.post("/login", (req, res) => {
     if (error) {
       console.log("login::error::", error);
     } else {
-      req.session.user_id = user_id;
-      req.session.save((error) => {
-        if (error) {
-          console.log("session save error :: ", error);
-        } else {
-          console.log("save_session::", req.session);
-          console.log(`login::${new Date()}::result::${result[0]}`);
-          res.status(200).send(result[0]);
-        }
-      });
+      // req.session.user_id = user_id;
+      // req.session.save((error) => {
+      //   if (error) {
+      //     console.log("session save error :: ", error);
+      //   } else {
+      //     console.log("save_session::", req.session);
+      //     console.log(`login::${new Date()}::result::${result[0]}`);
+      //     res.status(200).send(result[0]);
+      //   }
+      // });
+      let accessToken = generateAccessToken(user_id);
+      let refreshToken = generateRefreshToken(user_id);
+      res.status(200).json({user_id:result[0].user_id, accessToken:accessToken, refreshToken:refreshToken})
     }
   });
 });
 
-app.get("/logged", (req, res) => {
-  let session_user_id = req.session.user_id;
-  console.log("logged::req.session::", req.session);
-  console.log("logged::session_user_id::", session_user_id);
-  res.status(200).send(session_user_id);
-});
+// app.get("/logged", (req, res) => {
+//   let session_user_id = req.session.user_id;
+//   console.log("logged::req.session::", req.session);
+//   console.log("logged::session_user_id::", session_user_id);
+//   res.status(200).send(session_user_id);
+// });
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
