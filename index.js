@@ -8,7 +8,7 @@ const logger = require("morgan");
 const db = require("./config/db");
 // const compression = require('compression');
 // const dotenv = require("dotenv");
-// const cookieParser = require("cookie-parser");
+const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const bodyParser = require("body-parser");
 // ------------------------------------------ //
@@ -23,22 +23,23 @@ app.use(helmet());
 app.use(logger("dev"));
 // cors
 const corsOption = {
-  origin : true,
-  credentials : true
-}
+  origin: true,
+  credentials: true,
+};
 app.use(cors(corsOption));
-
+app.use(cookieParser());
 app.use(
   session({
+    key: "logged",
     secret: "secret",
     resave: false,
     saveUninitialized: true,
-    cookie : {
-      httpOnly : true,
-      sameSite : 'none',
-      maxAge : 5300000,
-      secure : true,
-  },
+    cookie: {
+      httpOnly: true,
+      sameSite: "none",
+      maxAge: 5300000,
+      secure: true,
+    },
   })
 );
 
@@ -99,23 +100,29 @@ app.post("/login", (req, res) => {
     if (error) {
       console.log("login::error::", error);
     } else {
-      req.session.user_id = user_id;
+      console.log("user_id::", user_id);
+      req.session.logged = user_id;
       req.session.save((error) => {
         if (error) {
           console.log("session save error :: ", error);
-        } else {
-          console.log(`login::${new Date()}::result::${result[0]}`);
-          res.status(200).send(result[0]);
         }
       });
+      console.log(`login::${new Date()}::result::${result[0]}`);
+      res.status(200).send(result[0]);
     }
   });
 });
 
 app.get("/logged", (req, res) => {
-  let session_user_id = req.session.user_id;
-  console.log("logged::session_user_id::", session_user_id);
-  res.status(200).send(session_user_id);
+  let session_user_id = req.session.logged;
+  if (req.session) {
+    console.log("logged::req.session", req.session);
+    console.log("logged::session_user_id::", session_user_id);
+    res.status(200).send(session_user_id);
+  } else {
+    console.log("logged::req.session", req.session);
+    res.status(200).send(req.session);
+  }
 });
 
 app.listen(port, () => {
