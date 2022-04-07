@@ -32,8 +32,8 @@ const corsOption = {
   credentials: true,
   methods:"PUT, GET, POST, DELETE, OPTIONS",
 }
-// app.use(cors(corsOption));
-app.use(cors());
+app.use(cors(corsOption));
+// app.use(cors());
 
 app.use(
   session({
