@@ -130,6 +130,7 @@ app.post("/login", (req, res) => {
 
 app.get("/logged", (req, res) => {
   let session_user_id = req.session.user_id;
+  console.log("logged::req.session::", req.session);
   console.log("logged::session_user_id::", session_user_id);
   res.status(200).send(session_user_id);
 });
