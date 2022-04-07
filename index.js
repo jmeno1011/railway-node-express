@@ -10,7 +10,7 @@ const db = require("./config/db");
 // const dotenv = require("dotenv");
 // const cookieParser = require("cookie-parser");
 const session = require("express-session");
-const bodyParser = require('body-parser');
+const bodyParser = require("body-parser");
 // ------------------------------------------ //
 
 const port = process.env.PORT || 8000;
@@ -24,13 +24,15 @@ app.use(logger("dev"));
 // middleware
 app.use(cors());
 
-app.use(session({
-  secret:'secret',
-  resave:false,
-  saveUninitialized:true
-}))
+app.use(
+  session({
+    secret: "secret",
+    resave: false,
+    saveUninitialized: true,
+  })
+);
 
-app.use(bodyParser.urlencoded({extended:false}));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.get("/", (req, res) => {
@@ -80,30 +82,31 @@ app.get("/test-api", (req, res) => {
   });
 });
 
-app.post('/login', (req, res)=>{
-  const {user_id, user_pw} = req.body;
+app.post("/login", (req, res) => {
+  const { user_id, user_pw } = req.body;
   const select_user = `select user_id, user_pw from person where user_id='${user_id}' and user_pw='${user_pw}'`;
-  db.query(select_user, (error, result)=>{
-    if(error){
+  db.query(select_user, (error, result) => {
+    if (error) {
       console.log("login::error::", error);
-    }else{
-      console.log(result[0]);
+    } else {
       req.session.user_id = user_id;
-      req.session.save((error)=>{
-        if(error){
-          console.log("session save error :: ",error);
-        }else{
+      req.session.save((error) => {
+        if (error) {
+          console.log("session save error :: ", error);
+        } else {
+          console.log(`login::${new Date()}::result::${result[0]}`);
           res.status(200).send(result[0]);
         }
-      })
+      });
     }
-  })
-})
+  });
+});
 
-app.get('/logged', (req, res)=>{
+app.get("/logged", (req, res) => {
   let session_user_id = req.session.user_id;
+  console.log("logged::session_user_id::", session_user_id);
   res.status(200).send(session_user_id);
-})
+});
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
