@@ -9,7 +9,7 @@ const db = require("./config/db");
 // const compression = require('compression');
 // const dotenv = require("dotenv");
 // const cookieParser = require("cookie-parser");
-// const session = require("express-session");
+const session = require("express-session");
 // const bodyParser = require('body-parser');
 // ------------------------------------------ //
 
@@ -23,6 +23,12 @@ app.use(helmet());
 app.use(logger("dev"));
 // middleware
 app.use(cors());
+
+app.use(session({
+  secret:'secret',
+  resave:false,
+  saveUninitialized:true
+}))
 
 app.get("/", (req, res) => {
   console.log(`${new Date()}:: connect / `);
@@ -70,6 +76,31 @@ app.get("/test-api", (req, res) => {
     message: "test-api-message",
   });
 });
+
+app.post('/login', (req, res)=>{
+  const {user_id, user_pw} = req.body;
+  const select_user = `select user_id, user_pw from person where user_id='${user_id}' and user_pw='${user_pw}'`;
+  db.query(select_user, (error, result)=>{
+    if(error){
+      console.log("login::error::", error);
+    }else{
+      console.log(result[0]);
+      req.session.user_id = user_id;
+      req.session.save((error)=>{
+        if(error){
+          console.log("session save error :: ",error);
+        }else{
+          res.status(200).send(result[0]);
+        }
+      })
+    }
+  })
+})
+
+app.get('/logged', (req, res)=>{
+  let session_user_id = req.session.user_id;
+  res.status(200).send(session_user_id);
+})
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
