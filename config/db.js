@@ -1,7 +1,7 @@
 const mysql = require("mysql");
-const { db_config } = require("./db_config");
+const { db_config, db_pool_config } = require("./db_config");
 
-let db;
+exports.db;
 
 function handleDisconnect() {
   db = mysql.createConnection(db_config);
@@ -12,7 +12,7 @@ function handleDisconnect() {
       setTimeout(handleDisconnect, 2000);
     }
   });
-
+  ``;
   db.on("error", function (err) {
     console.log("db error", err);
 
@@ -25,4 +25,6 @@ function handleDisconnect() {
 }
 handleDisconnect();
 
-module.exports = db;
+exports.pool = mysql.createPool(db_pool_config);
+
+// module.exports = db;
